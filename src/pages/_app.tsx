@@ -10,12 +10,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <StarknetProvider connectors={connectors} autoConnect>
-      {/* <div style={{ backgroundColor: "#018281" }}> */}
+      <div style={{ backgroundColor: "#018281", minHeight: "100vh" }}>
+        <style jsx global>
+          {`
+            body {
+              margin: 0px;
+              padding: 0px;
+            }
+          `}
+        </style>
         <NextHead>
-          <title>StarkNet ❤️ React</title>
+          <title>SNS</title>
         </NextHead>
         <Component {...pageProps} />
-      {/* </div> */}
+      </div>
     </StarknetProvider>
   );
 }

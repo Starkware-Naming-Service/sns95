@@ -7,16 +7,19 @@ import {
   WindowHeader,
   Button,
   Toolbar,
+  TextField,
   Panel,
 } from "react95";
 
 const Wrapper = styled.div`
-  padding: 5rem;
+  padding: 1rem;
   background: ${({ theme }) => theme.desktopBackground};
   .window-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #060083;
+    color: white;
   }
   .close-icon {
     display: inline-block;
@@ -48,7 +51,8 @@ const Wrapper = styled.div`
   }
   .window {
     width: 400px;
-    min-height: 200px;
+    /* min-height: 200px; */
+    background-color: #c6c6c6;
   }
   .window:nth-child(2) {
     margin: 2rem;
@@ -60,21 +64,32 @@ const Wrapper = styled.div`
     line-height: 31px;
     padding-left: 0.25rem;
   }
+  .menu {
+    background-color: #848584;
+  }
 `;
 
 export function NameModule() {
   const { transactions } = useStarknetTransactionManager();
   return (
-    <div>
+    <Wrapper>
       <Window resizable className="window">
         <WindowHeader className="window-header">
           <span>SNS.exe</span>
         </WindowHeader>
         <Toolbar>
-          <Button variant="menu" size="sm">
+          <Button
+            variant="menu"
+            size="sm"
+            style={{ backgroundColor: "#C6c6c6", border: "1px solid grey" }}
+          >
             Register
           </Button>
-          <Button variant="menu" size="sm">
+          <Button
+            variant="menu"
+            size="sm"
+            style={{ backgroundColor: "#C6c6c6", border: "1px solid grey" }}
+          >
             Check
           </Button>
         </Toolbar>
@@ -83,18 +98,22 @@ export function NameModule() {
             Starknet Name Services in a naming service for the starkers. <br />
             Get a .stark domain
           </p>
+          <div style={{ display: "flex" }}>
+            <TextField
+              value={"starkware.stark"}
+              placeholder="Type here..."
+              onChange={() => console.log("test")}
+              fullWidth
+            />
+            <Button
+              onClick={() => console.log("test")}
+              style={{ marginLeft: 4 }}
+            >
+              Reset
+            </Button>
+          </div>
         </WindowContent>
       </Window>
-
-      {/* <Window className="window">
-        <WindowHeader active={false} className="window-header">
-          <span>not-active.exe</span>
-          <Button>
-            <span className="close-icon" />
-          </Button>
-        </WindowHeader>
-        <WindowContent>I am not active</WindowContent>
-      </Window> */}
-    </div>
+    </Wrapper>
   );
 }

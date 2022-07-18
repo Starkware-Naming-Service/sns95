@@ -3,9 +3,10 @@ import type { NextPage } from "next";
 import { useMemo, useState } from "react";
 import { toBN } from "starknet/dist/utils/number";
 import { ConnectWallet } from "~/components/ConnectWallet";
+import Image from "next/image";
 import { IncrementCounter } from "~/components/IncrementCounter";
 import { TransactionList } from "~/components/TransactionList";
-// import { useCounterContract } from "~/hooks/counter";
+
 import { useSNSContract } from "~/hooks/sns";
 import styled from "styled-components";
 import { NameModule } from "~/components/NameModule";
@@ -16,49 +17,26 @@ const Home: NextPage = () => {
   const { contract: sns } = useSNSContract();
   // const { contract: sns } = useSNS();
 
-  const { data: counterResult } = useStarknetCall({
-    contract: sns,
-    method: "counter",
-    args: [],
-    options: { watch },
-  });
+  // const { data: counterResult } = useStarknetCall({
+  //   contract: sns,
+  //   method: "counter",
+  //   args: [],
+  //   options: { watch },
+  // });
 
-  const counterValue = useMemo(() => {
-    if (counterResult && counterResult.length > 0) {
-      const value = toBN(counterResult[0]);
-      return value.toString(10);
-    }
-  }, [counterResult]);
+  // const counterValue = useMemo(() => {
+  //   if (counterResult && counterResult.length > 0) {
+  //     const value = toBN(counterResult[0]);
+  //     return value.toString(10);
+  //   }
+  // }, [counterResult]);
 
   return (
-    <div>
-      <HeaderWallet>
-        <h2 style={{ margin: 0 }}>Starkware Name Service</h2>
-        <ConnectWallet />
-      </HeaderWallet>
-
-      <MainContent>
-        <h2 className="text-3xl font-bold underline">Contract</h2>
-        <p>Address: {sns?.address}</p>
-        <p>Value: {counterValue}</p>
-        <NameModule />
-        {/* <p>
-          <span>
-            Refresh value at every block{" "}
-            <input
-              type="checkbox"
-              checked={watch}
-              onChange={(evt) => setWatch(evt.target.checked)}
-            />
-          </span>
-        </p> */}
-        <p>Register</p>
-        <p>Check</p>
-        {/* <IncrementCounter />
-        <h2>Recent Transactions</h2>
-        <TransactionList /> */}
-      </MainContent>
-    </div>
+    <MainContent>
+      <Image src="/snsLogo.png" alt="sns" height={200} width={200} />
+      <ConnectWallet />
+      <NameModule />
+    </MainContent>
   );
 };
 
@@ -68,7 +46,7 @@ export default Home;
 const HeaderWallet = styled.section`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1em;
 `;
 
