@@ -28,9 +28,8 @@ export function MainModule() {
     contract: sns,
     method: "sns_lookup_name_to_adr",
     args: [
-      "0x0614A3dc3350Dd4702d14eEdB25D6fCDB014D506f7631899fb18d3bA2D3246D0",
+      "0x0614A3dc3350Dd4702d14eEdB25D6fCDB014D506f7631899fb18d3bA2D3246D0", // Hardcoded address
     ],
-    // args: ["0x759ca48d751495478bfa625e6a5ee2a1e493631f7b959b944cf1a8ddfda748"],
   });
 
   const snsValue = useMemo(() => {
@@ -41,13 +40,14 @@ export function MainModule() {
   }, [registeredSNS]);
 
   const registerSNS = () => {
-    invoke({
-      args: ["0x1"],
-      metadata: {
-        method: "sns_register",
-        message: "register SNS",
-      },
-    });
+    console.log("registerinbg SNS name: ", snsName);
+    // invoke({
+    //   args: ["0x1"], // Hardcoded arg
+    //   metadata: {
+    //     method: "sns_register",
+    //     message: "register SNS",
+    //   },
+    // });
   };
 
   // const checkSNSExists = () => {
@@ -62,26 +62,29 @@ export function MainModule() {
   //   });
   // };
 
-  const registerContent = (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <TextField
-        value={snsName}
-        placeholder={"starkware.stark"}
-        onChange={() => setSNSName()}
-        fullWidth
-      />
-      <Button onClick={() => registerSNS()} style={{ marginTop: 4 }}>
-        Register
-      </Button>
-    </div>
-  );
+  const registerContent = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          value={snsName}
+          placeholder={"starkware.stark"}
+          // onChange={() => setSNSName()}
+          onChange={(e) => setSNSName(e.target.value)}
+          fullWidth
+        />
+        <Button onClick={() => registerSNS()} style={{ marginTop: 4 }}>
+          Register
+        </Button>
+      </div>
+    );
+  };
 
   const searchContent = (
     <div
@@ -134,7 +137,7 @@ export function MainModule() {
             <br />
             Get a .stark domain
           </p>
-          {registerContent}
+          {registerContent()}
           <p style={{ textAlign: "center" }}>
             Check address to see if SNS is registered
           </p>
