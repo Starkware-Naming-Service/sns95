@@ -9,33 +9,25 @@ import { TransactionList } from "~/components/TransactionList";
 
 import { useSNSContract } from "~/hooks/sns";
 import styled from "styled-components";
-import { NameModule } from "~/components/NameModule";
+import { MainModule } from "~/components/MainModule";
 
 const Home: NextPage = () => {
   const [watch, setWatch] = useState(true);
-  // const { contract: counter } = useCounterContract();
-  const { contract: sns } = useSNSContract();
-  // const { contract: sns } = useSNS();
-
-  // const { data: counterResult } = useStarknetCall({
-  //   contract: sns,
-  //   method: "counter",
-  //   args: [],
-  //   options: { watch },
-  // });
-
-  // const counterValue = useMemo(() => {
-  //   if (counterResult && counterResult.length > 0) {
-  //     const value = toBN(counterResult[0]);
-  //     return value.toString(10);
-  //   }
-  // }, [counterResult]);
 
   return (
     <MainContent>
       <Image src="/snsLogo.png" alt="sns" height={200} width={200} />
       <ConnectWallet />
-      <NameModule />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <MainModule />
+      </div>
     </MainContent>
   );
 };

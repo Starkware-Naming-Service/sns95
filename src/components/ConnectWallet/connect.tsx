@@ -1,10 +1,8 @@
 import { useStarknet, useConnectors } from "@starknet-react/core";
-
+import { Button, Bar } from "react95";
 export default function ConnectWallet() {
   const { account } = useStarknet();
   const { available, connect, disconnect } = useConnectors();
-
-  // console.log("availablae", available);
 
   if (account) {
     return (
@@ -15,15 +13,15 @@ export default function ConnectWallet() {
           marginBottom: 16,
         }}
       >
-        <p style={{ color: "white" }}>
+        <Button style={{ backgroundColor: "#C6c6c6", padding: 8, width: 200 }}>
           Account: {account.substring(0, 7) + "..."}
-        </p>
-        <button
+        </Button>
+        <Button
           onClick={() => disconnect()}
-          style={{ maxWidth: 100, marginLeft: 8 }}
+          style={{ marginLeft: 8, backgroundColor: "#C6c6c6" }}
         >
           Disconnect
-        </button>
+        </Button>
       </div>
     );
   }
@@ -31,13 +29,17 @@ export default function ConnectWallet() {
   return (
     <div style={{ display: "flex", flexDirection: "row", marginBottom: 16 }}>
       {available.map((connector) => (
-        <button
+        <Button
           key={connector.id()}
           onClick={() => connect(connector)}
-          style={{ marginBottom: 16 }}
+          style={{
+            marginBottom: 16,
+            marginRight: 8,
+            backgroundColor: "#C6c6c6",
+          }}
         >
           {`Connect ${connector.name()}`}
-        </button>
+        </Button>
       ))}
     </div>
   );
