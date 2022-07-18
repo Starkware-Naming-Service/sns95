@@ -4,26 +4,33 @@ import {
   getInstalledInjectedConnectors,
   StarknetProvider,
 } from "@starknet-react/core";
+import { Box, ChakraProvider } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
+
+// 2. Extend the theme to include custom colors, fonts, etc
+const colors = {};
+
+const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }: AppProps) {
   const connectors = getInstalledInjectedConnectors();
 
   return (
     <StarknetProvider connectors={connectors} autoConnect>
-      <div style={{ backgroundColor: "#018281", minHeight: "100vh" }}>
-        <style jsx global>
-          {`
-            body {
-              margin: 0px;
-              padding: 0px;
-            }
-          `}
-        </style>
+      <ChakraProvider theme={theme}>
         <NextHead>
           <title>SNS</title>
         </NextHead>
-        <Component {...pageProps} />
-      </div>
+        <Box
+          bg='url("./bg.png")'
+          bgPosition="center"
+          bgSize="cover"
+          bgRepeat="no-repeat"
+          minH="100vh"
+        >
+          <Component {...pageProps} />
+        </Box>
+      </ChakraProvider>
     </StarknetProvider>
   );
 }
