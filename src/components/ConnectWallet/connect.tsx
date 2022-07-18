@@ -1,25 +1,33 @@
-import { useStarknet, useConnectors } from '@starknet-react/core'
+import { useStarknet, useConnectors } from "@starknet-react/core";
 
 export default function ConnectWallet() {
-  const { account } = useStarknet()
-  const { available, connect, disconnect } = useConnectors()
+  const { account } = useStarknet();
+  const { available, connect, disconnect } = useConnectors();
+
+  console.log("availablae", available);
 
   if (account) {
     return (
-      <div>
-        <p>Account: {account}</p>
-        <button onClick={() => disconnect()}>Disconnect</button>
+      <div style={{ display: "flex", flexDirection: "row", marginBottom: 16 }}>
+        <p>Account: {account.substring(0, 7) + "..."}</p>
+        <button onClick={() => disconnect()} style={{ maxWidth: 100 }}>
+          Disconnect
+        </button>
       </div>
-    )
+    );
   }
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "row", marginBottom: 16 }}>
       {available.map((connector) => (
-        <button key={connector.id()} onClick={() => connect(connector)}>
+        <button
+          key={connector.id()}
+          onClick={() => connect(connector)}
+          style={{ marginBottom: 16 }}
+        >
           {`Connect ${connector.name()}`}
         </button>
       ))}
     </div>
-  )
+  );
 }
