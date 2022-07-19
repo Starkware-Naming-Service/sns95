@@ -46,14 +46,16 @@ const AllNfts = () => {
       <Container textAlign="center" maxW={800} pb={8}>
         <Heading color="white">Browse Registered Domains</Heading>
         <SimpleGrid columns={2} spacing={4} mt={4}>
-          {data?.assets?.map(({ token_id, owner: { account_address } }, i) => (
-            <SnsNftCard
-              username={usernames[i]}
-              key={i}
-              id={token_id}
-              owner={account_address}
-            />
-          ))}
+          {(data as any)?.assets?.map(
+            ({ token_id, owner: { account_address } }, i) => (
+              <SnsNftCard
+                username={usernames[i]}
+                key={i}
+                id={token_id}
+                owner={account_address}
+              />
+            )
+          )}
         </SimpleGrid>
       </Container>
     </>
