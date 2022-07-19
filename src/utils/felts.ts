@@ -24,7 +24,7 @@ export const encodeNameAsFelt = (name: string) : string => {
     throw new Error("name too long")
   }
   let length = name.length < 16 ? `0${name.length.toString(16)}` : name.length.toString(16)
-  return `0x${[length, ...name.split("").map(char => char.charCodeAt(0).toString(16)), "0".repeat(60)].join("").slice(0, 62)}`
+  return `0x${[length, ...name.split("").map(char => char.charCodeAt(0).toString(16))].join("")}`
 };
 
 export const decodeNameAsFelt = (name: string) : string => {

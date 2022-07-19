@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalBody,
@@ -15,36 +15,59 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
+import { encodeNameAsFelt } from 'src/utils/felts';
+import { useSNSContract } from '~/hooks/sns';
+import { useStarknet, useStarknetInvoke } from '@starknet-react/core';
 
 type RegisterModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  address: string;
+  name: string;
 };
 
 const RegisterModal: React.FC<RegisterModalProps> = ({
   isOpen,
   onClose,
-  address,
-}) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>Register {address}</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <FormControl>
-          <FormLabel textAlign="center">Registration Time (Years)</FormLabel>
-          <Input size="lg" placeholder="1" />
-          <FormHelperText>How long you want to register for</FormHelperText>
-        </FormControl>
-      </ModalBody>
+  name
+}) => {
+  const {contract} = useSNSContract()
+  const { account } = useStarknet()
+  const {invoke, reset, ...status} = useStarknetInvoke({ contract, method: "sns_register" })
+  const [result, setResult] = useState("")
 
-      <ModalFooter>
-        <Button colorScheme="orange">Save</Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-);
+  const handleRegister = () => {
+    console.log("search:");
+    console.log(name);
+    const encodedName = encodeNameAsFelt(name);
+    console.log("encoded search:");
+    console.log(encodedName);
+    (async () => {
+      const res = await invoke({args: [encodedName]})
+      setResult(JSON.stringify(res));
+    })()
+  }
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Register {name}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel textAlign="center">Registration Time (Years)</FormLabel>
+            <Input size="lg" placeholder="1" />
+            <FormHelperText>How long do you want to register for?</FormHelperText>
+          </FormControl>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme="orange" onClick={handleRegister}>Register</Button>
+          {JSON.stringify(result)}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
+}
 
 export default RegisterModal;

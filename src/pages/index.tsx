@@ -9,6 +9,7 @@ import {
   Heading,
   Input,
   Spacer,
+  Spinner,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -17,7 +18,7 @@ import RegisterModal from "~/components/RegisterModal";
 import EditModal from "~/components/EditModal";
 import { decodeNameAsFelt, encodeNameAsFelt, hashName } from 'src/utils/felts';
 import { useSNSContract } from '~/hooks/sns';
-import { useStarknetCall } from '@starknet-react/core';
+import { useStarknetCall, useStarknetInvoke } from '@starknet-react/core';
 
 const Home: NextPage = () => {
   const {
@@ -34,28 +35,18 @@ const Home: NextPage = () => {
   const [search, setSearch] = useState("")
   const [result, setResult] = useState("")
   
-  const {contract: sns_contract} = useSNSContract()
+  const {contract} = useSNSContract()
 
-  const res = useStarknetCall({ contract: sns_contract, method: "name", args: [], options: {
+  const readNameRes = useStarknetCall({contract, method: "sns_lookup_name_to_adr", args: [encodeNameAsFelt(search)], options: {
     watch: false
-  } })
-
-  const handleSearch = (search: string) => {
-    // encodedName = encodeNameAsFelt(search);
-    if (!sns_contract) {
-      (async () => {
-        const res = await sns_contract!.functions["name"]()
-        setResult(JSON.stringify(res));
-      })()
-    }
-  }
+  }})
 
   return (
     <>
       <RegisterModal
         isOpen={registerOpen}
         onClose={registerOnClose}
-        address="afe"
+        name={search}
       />
       <EditModal
         isOpen={editOpen}
@@ -72,58 +63,66 @@ const Home: NextPage = () => {
           <Input color="black" onChange={(e) => setSearch(e.target.value)} size="lg" placeholder="test.stark" mt={4} bg="white" />
         </Box>
 
-        <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => res.refresh()}>
+        <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => readNameRes.refresh()}>
           Search
         </Button>
-        result: {JSON.stringify(res)}
-        <Flex
-          w="100%"
-          bg="white"
-          borderRadius={10}
-          mt={4}
-          px={4}
-          py={2}
-          textAlign="left"
-          background="rgba(255, 255, 255, 0.85)"
-          backdropFilter="blur(20px)"
-        >
-          <Box>
-            <Text fontSize="md" color="gray.400">
-              Domain
-            </Text>
-            <Text fontSize="xl" fontWeight="bold" mt={4}>
-              caelin.eth
-            </Text>
-          </Box>
-          <Box ml={4}>
-            <Text fontSize="md" color="gray.400">
-              Address
-            </Text>
-            <Text fontSize="xl" fontWeight="bold" mt={4}>
-              0xAF...FE
-            </Text>
-          </Box>
-          <Spacer />
-          <Box>
-            <Text fontSize="md" color="gray.400">
-              Status
-            </Text>
-            <Button
-              colorScheme="orange"
-              size="lg"
-              mt={2}
-              onClick={registerOnOpen}
-            >
-              Register
-            </Button>
-            <Button colorScheme="red" isDisabled size="lg" mt={2}>
-              Registered for 8 Days
-            </Button>
-            <Button colorScheme="orange" size="lg" mt={2} onClick={editOnOpen}>
-              Edit
-            </Button>
-          </Box>
-        </Flex>
+        <Box>
+
+        {!Boolean(readNameRes.data) ? (
+          <Spinner />
+          ) : (
+            <Flex
+            w="100%"
+            bg="white"
+            borderRadius={10}
+            mt={4}
+            px={4}
+            py={2}
+            textAlign="left"
+            background="rgba(255, 255, 255, 0.85)"
+            backdropFilter="blur(20px)"
+          >
+            <Box>
+              <Text fontSize="md" color="gray.400">
+                Domain
+              </Text>
+              <Text color="gray.500" fontSize="xl" fontWeight="bold" mt={4}>
+                {search}
+              </Text>
+            </Box>
+            <Box ml={4}>
+              <Text fontSize="md" color="gray.400">
+                Address
+              </Text>
+              <Text color="gray.500" fontSize="xl" fontWeight="bold" mt={4}>
+                {/* {(() => {debugger; return "asdasd"})()} */}
+                {readNameRes.data?.[1].toString() === "0" ? "unregistered" : `0x${readNameRes.data?.[1].toString().substring(0, 7)}...` } 
+              </Text>
+            </Box>
+            <Spacer />
+            <Box>
+              <Text fontSize="md" color="gray.400">
+                Status
+              </Text>
+              <Button
+                colorScheme="orange"
+                size="lg"
+                mt={2}
+                mr={2}
+                onClick={registerOnOpen}
+                >
+                Register
+              </Button>
+              <Button mr={2} colorScheme="red" isDisabled size="lg" mt={2}>
+                Registered for 8 Days
+              </Button>
+              <Button colorScheme="orange" size="lg" mt={2} onClick={editOnOpen}>
+                Edit
+              </Button>
+            </Box>
+          </Flex>
+        )}
+        </Box>
       </Container>
     </>
   );
