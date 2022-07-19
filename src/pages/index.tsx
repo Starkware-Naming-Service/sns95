@@ -18,6 +18,7 @@ import EditModal from "~/components/EditModal";
 import { decodeNameAsFelt, encodeNameAsFelt, hashName } from 'src/utils/felts';
 import { useSNSContract } from '~/hooks/sns';
 import { useStarknetCall, useStarknetInvoke } from '@starknet-react/core';
+import { BigNumber } from '@ethersproject/bignumber';
 
 const Home: NextPage = () => {
   const {
@@ -39,14 +40,15 @@ const Home: NextPage = () => {
   const {invoke, reset, ...status} = useStarknetInvoke({ contract, method: "sns_register" })
 
   const handleSearch = () => {
-    console.log("search:")
-    console.log(search)
-    const encodedName = encodeNameAsFelt(search)
-    console.log("encoded search:")
-    console.log(encodedName)
+    console.log("search:");
+    console.log(search);
+    const encodedName = encodeNameAsFelt(search);
+    console.log("encoded search:");
+    console.log(encodedName);
     (async () => {
       // @ts-ignore
-      const res = await invoke({args: {name: encodedName}})
+      debugger;
+      const res = await invoke({args: {name: BigNumber.from(encodedName)}})
       setResult(JSON.stringify(res));
     })()
   }
@@ -78,6 +80,7 @@ const Home: NextPage = () => {
         <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => handleSearch()}>
           Search
         </Button>
+        {JSON.stringify(status)}
         <Flex
           w="100%"
           bg="white"
