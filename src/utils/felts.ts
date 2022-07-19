@@ -24,10 +24,12 @@ export const encodeNameAsFelt = (name: string) : string => {
     throw new Error("name too long")
   }
   let length = name.length < 16 ? `0${name.length.toString(16)}` : name.length.toString(16)
-  return [length, ...name.split("").map(char => char.charCodeAt(0).toString(16)), "0".repeat(60)].join("").slice(0, 62)
+  return `0x${[length, ...name.split("").map(char => char.charCodeAt(0).toString(16)), "0".repeat(60)].join("").slice(0, 62)}`
 };
 
 export const decodeNameAsFelt = (name: string) : string => {
+  // remove leading 0x
+  name = name.slice(2)
   let length = parseInt(name.slice(0, 2), 16)
   let acc = ""
   for (let i = 0; i < length * 2; i += 2) {
