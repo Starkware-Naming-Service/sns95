@@ -15,6 +15,9 @@ import {
 import Navbar from "~/components/Navbar";
 import RegisterModal from "~/components/RegisterModal";
 import EditModal from "~/components/EditModal";
+import { decodeNameAsFelt, encodeNameAsFelt, hashName } from 'src/utils/felts';
+import { useSNSContract } from '~/hooks/sns';
+import { useStarknetCall } from '@starknet-react/core';
 
 const Home: NextPage = () => {
   const {
@@ -27,6 +30,25 @@ const Home: NextPage = () => {
     onOpen: editOnOpen,
     onClose: editOnClose,
   } = useDisclosure();
+
+  const [search, setSearch] = useState("")
+  const [result, setResult] = useState("")
+  
+  const {contract: sns_contract} = useSNSContract()
+
+  const res = useStarknetCall({ contract: sns_contract, method: "name", args: [], options: {
+    watch: false
+  } })
+
+  const handleSearch = (search: string) => {
+    // encodedName = encodeNameAsFelt(search);
+    if (!sns_contract) {
+      (async () => {
+        const res = await sns_contract!.functions["name"]()
+        setResult(JSON.stringify(res));
+      })()
+    }
+  }
 
   return (
     <>
@@ -47,12 +69,13 @@ const Home: NextPage = () => {
           Enter any valid address
         </Text>
         <Box maxW={400} mx="auto">
-          <Input size="lg" placeholder="test.stark" mt={4} bg="white" />
+          <Input color="black" onChange={(e) => setSearch(e.target.value)} size="lg" placeholder="test.stark" mt={4} bg="white" />
         </Box>
 
-        <Button colorScheme="orange" size="lg" mt={4} mx="auto">
+        <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => res.refresh()}>
           Search
         </Button>
+        result: {JSON.stringify(res)}
         <Flex
           w="100%"
           bg="white"
