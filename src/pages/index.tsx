@@ -17,7 +17,7 @@ import RegisterModal from "~/components/RegisterModal";
 import EditModal from "~/components/EditModal";
 import { decodeNameAsFelt, encodeNameAsFelt, hashName } from 'src/utils/felts';
 import { useSNSContract } from '~/hooks/sns';
-import { useStarknetCall } from '@starknet-react/core';
+import { useStarknetCall, useStarknetInvoke } from '@starknet-react/core';
 
 const Home: NextPage = () => {
   const {
@@ -34,21 +34,24 @@ const Home: NextPage = () => {
   const [search, setSearch] = useState("")
   const [result, setResult] = useState("")
   
-  const {contract: sns_contract} = useSNSContract()
+  const {contract} = useSNSContract()
 
-  const res = useStarknetCall({ contract: sns_contract, method: "name", args: [], options: {
-    watch: false
-  } })
+  const {invoke, reset, ...status} = useStarknetInvoke({ contract, method: "sns_register" })
 
-  const handleSearch = (search: string) => {
-    // encodedName = encodeNameAsFelt(search);
-    if (!sns_contract) {
-      (async () => {
-        const res = await sns_contract!.functions["name"]()
-        setResult(JSON.stringify(res));
-      })()
-    }
+  const handleSearch = () => {
+    console.log("search:")
+    console.log(search)
+    const encodedName = encodeNameAsFelt(search)
+    console.log("encoded search:")
+    console.log(encodedName)
+    (async () => {
+      // @ts-ignore
+      const res = await invoke({args: {name: encodedName}})
+      setResult(JSON.stringify(res));
+    })()
   }
+
+  console.log(status)
 
   return (
     <>
@@ -72,10 +75,9 @@ const Home: NextPage = () => {
           <Input color="black" onChange={(e) => setSearch(e.target.value)} size="lg" placeholder="test.stark" mt={4} bg="white" />
         </Box>
 
-        <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => res.refresh()}>
+        <Button colorScheme="orange" size="lg" mt={4} mx="auto" onClick={() => handleSearch()}>
           Search
         </Button>
-        result: {JSON.stringify(res)}
         <Flex
           w="100%"
           bg="white"
